@@ -1,42 +1,61 @@
 import requests
 from bs4 import BeautifulSoup
 
-# text file input here...
-website = 'https://gfycat.com/impolitegrimyhapuka-animeme'
+class gyfcat_reader():
 
-# access the website
-response = requests.get(website)
-#print(response.url)
-#print(type(response))
-#print(response)
-#print(response.text)
-#print(response.content)
+	def __init__(self, file):
+		file = _file
 
-# initialize Beautiful Soup
-soup = BeautifulSoup(response.text, 'html.parser')
-#print(soup.prettify())
+	def read_file(self):
+		pass
 
-video = soup.find('video', attrs={'class':'video media'})
-#print(video)
-links = video.find_all('source')
+	def parse(self):
+		pass
 
-#print(links)
-#for link in links:
-#	print(link['src'])
 
-webm_link = video.find('source')
-webm_url = webm_link['src']
+if __name__ == '__main__':
 
-#links = videos.find('source')
-#print(links['src'])
+	#inputs = "xxx"
+	#gyfcat = gyfcat_reader(inputs)
+	#images = gyfcat.parse()
 
-r = requests.get(webm_url)
+	# text file input here...
+	#website = 'https://gfycat.com/impolitegrimyhapuka-animeme'
+	website = 'https://gfycat.com/distinctflusteredhind-misunderstood-understand-confused'
 
-filename = webm_url.split('/')[-1]
-print(filename)
+	# access the website
+	response = requests.get(website)
+	#print(response.url)
+	#print(type(response))
+	#print(response)
+	#print(response.text)
+	#print(response.content)
 
-with open(filename, 'wb') as f:
-    f.write(r.content)
+	# initialize Beautiful Soup
+	soup = BeautifulSoup(response.text, 'html.parser')
+	#print(soup.prettify())
+
+	video = soup.find('video', attrs={'class':'video media'})
+	print(video)
+
+	links = video.find_all('source')
+	print(links)
+	for link in links:
+		print(link['src'])
+
+	webm_link = video.find('source')
+	webm_url = webm_link['src']
+
+	#links = videos.find('source')
+	#print(links['src'])
+
+	r = requests.get(webm_url)
+
+	filename = webm_url.split('/')[-1]
+	print(filename)
+
+	#with open(filename, 'wb') as f:
+	#    f.write(r.content)
 
 
 
