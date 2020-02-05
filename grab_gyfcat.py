@@ -1,62 +1,47 @@
 import requests
 from bs4 import BeautifulSoup
+import os
 
-class gyfcat_reader():
+def make_soup(url):
+	page = requests.get(url)
+	return BeautifulSoup(page.text, 'html.parser')
 
-	def __init__(self, file):
-		file = _file
+def get_image(url, verbose=False):
+	bs = make_soup(url)
+	# find page's <video> tag
+	video = bs.find('video', attrs={'class':'video media'})
+	if verbose: 
+		print('<video> tag: {}'.format(video))
+	# isolate webm link associated with <source> tag under <video>
+	link = video.find('source', attrs={'type':'video/webm'})['src']
+	if verbose: 
+		print('<source> tag: {}'.format(links))
+	if link is "":
+		quit('None error')
+	return link
 
-	def read_file(self):
-		pass
-
-	def parse(self):
-		pass
-
+def write_image(url):
+	filename = url.split('/')[-1]
+	image = requests.get(url)
+	try:
+		with open(filename, 'wb') as f:
+			f.write(image.content)
+		return 'File '+filename+' written successfully!'
+	except:
+		return 'Error: unable to write file!'
 
 if __name__ == '__main__':
 
-	#inputs = "xxx"
-	#gyfcat = gyfcat_reader(inputs)
-	#images = gyfcat.parse()
+	# add external text file support!
 
-	# text file input here...
-	#website = 'https://gfycat.com/impolitegrimyhapuka-animeme'
-	website = 'https://gfycat.com/distinctflusteredhind-misunderstood-understand-confused'
+	#page_url = 'https://gfycat.com/impolitegrimyhapuka-animeme'
+	#page_url = 'https://gfycat.com/distinctflusteredhind-misunderstood-understand-confused'
+	page_url = 'https://gfycat.com/flakypastduckbillcat-game-of-thrones-beric-dondarrion'
 
-	# access the website
-	response = requests.get(website)
-	#print(response.url)
-	#print(type(response))
-	#print(response)
-	#print(response.text)
-	#print(response.content)
-
-	# initialize Beautiful Soup
-	soup = BeautifulSoup(response.text, 'html.parser')
-	#print(soup.prettify())
-
-	video = soup.find('video', attrs={'class':'video media'})
-	print(video)
-
-	links = video.find_all('source')
-	print(links)
-	for link in links:
-		print(link['src'])
-
-	webm_link = video.find('source')
-	webm_url = webm_link['src']
-
-	#links = videos.find('source')
-	#print(links['src'])
-
-	r = requests.get(webm_url)
-
-	filename = webm_url.split('/')[-1]
-	print(filename)
-
-	#with open(filename, 'wb') as f:
-	#    f.write(r.content)
-
-
-
+	# extract the url pointing to the image on the gyfcat page
+	image_url = get_image(page_url)
+	
+	# save the image locally
+	result = write_image(image_url)
+	print(result)
 
