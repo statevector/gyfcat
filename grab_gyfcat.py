@@ -1,6 +1,17 @@
 import requests
 from bs4 import BeautifulSoup
-import os
+
+def import_text(file, verbose=False):
+	text = open(file, 'r')
+	urls = text.readlines()
+	text.close()
+	urls = [url.rstrip('\n') for url in urls]
+	if len(urls) == 0:
+		quit('Error: Input text file empty')
+	if verbose:
+		print('Loaded the following URLs:')
+		print('\n'.join('{}: {}'.format(*url) for url in enumerate(urls)))
+	return urls
 
 def make_soup(url):
 	page = requests.get(url)
@@ -17,7 +28,7 @@ def get_image(url, verbose=False):
 	if verbose: 
 		print('<source> tag: {}'.format(links))
 	if link is "":
-		quit('Error: Resultant BS tag not found.')
+		quit('Error: BS <source> tag not found')
 	return link
 
 def write_image(url):
@@ -27,24 +38,24 @@ def write_image(url):
 		try:
 			with open(filename, 'wb') as f:
 				f.write(r.content)
-			return 'File '+filename+' written successfully!'
+			return 'File '+filename+' written successfully'
 		except:
 			return 'Error: unable to write '+filename+'.'
 	else:
-		return 'Error: HTTP Status Code is not 200.'
+		return 'Error: HTTP Status Code is not 200'
 
 if __name__ == '__main__':
 
-	# add external text file support!
+	# read in list of gyfcat webpage URLs
+	page_urls = import_text('gyfcat.txt', verbose=True)
 
-	#page_url = 'https://gfycat.com/impolitegrimyhapuka-animeme'
-	#page_url = 'https://gfycat.com/distinctflusteredhind-misunderstood-understand-confused'
-	page_url = 'https://gfycat.com/flakypastduckbillcat-game-of-thrones-beric-dondarrion'
+	# iterate over the list
+	for page_url in page_urls:
+		# extract the url pointing to the image on the gyfcat page
+		image_url = get_image(page_url)
+		# save the image locally
+		result = write_image(image_url)
+		print(result)
 
-	# extract the url pointing to the image on the gyfcat page
-	image_url = get_image(page_url)
-	
-	# save the image locally
-	result = write_image(image_url)
-	print(result)
+
 
