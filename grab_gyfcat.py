@@ -17,18 +17,21 @@ def get_image(url, verbose=False):
 	if verbose: 
 		print('<source> tag: {}'.format(links))
 	if link is "":
-		quit('None error')
+		quit('Error: Resultant BS tag not found.')
 	return link
 
 def write_image(url):
 	filename = url.split('/')[-1]
-	image = requests.get(url)
-	try:
-		with open(filename, 'wb') as f:
-			f.write(image.content)
-		return 'File '+filename+' written successfully!'
-	except:
-		return 'Error: unable to write file!'
+	r = requests.get(url)
+	if r.status_code == 200:
+		try:
+			with open(filename, 'wb') as f:
+				f.write(r.content)
+			return 'File '+filename+' written successfully!'
+		except:
+			return 'Error: unable to write '+filename+'.'
+	else:
+		return 'Error: HTTP Status Code is not 200.'
 
 if __name__ == '__main__':
 
